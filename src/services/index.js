@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 //consumiendo una API REST con fech
 const Services = (url, parameter) => {
@@ -23,17 +23,29 @@ const Services = (url, parameter) => {
         async function setData() {
 
             if(typeof parameter != 'object'){
-               
-                //setDatas("se requiere un objeto")
                 throw new Error("se requiere un objeto");
             }
 
+            if(JSON.stringify(parameter)==='{}'){
+                  throw new Error("objeto vacio")  
+            }
+
             try {
-                const response = await fetch(url, parameter)
-                const data = await response.json()
-                if(data){
-                    setDatas(data)
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(parameter),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                })
+
+                if(response.ok){
+                    const data = await response.json()
+                    if(data){
+                        setDatas(data)
+                    }
                 }
+               
             } catch (error) {
                 console.error(error)
                 setDatas("error en la consulta")
@@ -46,7 +58,7 @@ const Services = (url, parameter) => {
             setData();
         }
 
-    }, [])
+    }, [url])
     
 
     return datas;

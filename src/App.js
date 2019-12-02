@@ -5,7 +5,11 @@ import Services from './services/index'
 
 function App() {
 
-  const dato =  Services('https://us-central1-botnews-97552.cloudfunctions.net/holamundo', {})
+  const dato =  Services('https://us-central1-botnews-97552.cloudfunctions.net/holamundo', {
+              name: "holamundo",
+              apellido: "rony"
+  })
+
   console.log(dato)
   return (
     <div className="App">
