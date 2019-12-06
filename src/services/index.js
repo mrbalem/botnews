@@ -1,68 +1,77 @@
 import { useState, useEffect } from 'react'
 
 //consumiendo una API REST con fech
-const Services = (url, parameter) => {
+const useServices = () => {
+
+    const configServiceDefault = {
+        type: 'get',
+        urls: '',
+        parameters: null,
+        isrequest: false
+    }
 
     const [datas, setDatas] = useState(null)
+    const [config, setConfig] = useState(configServiceDefault)
+    //const [isrequest,setRequest] = useState(false)
+    //const [type, seType] = useState('get')
+    // const [urls, setUrl] = useState(null)
+    // const [parameters, setParameters] = useState(null)
+    // const [isrequest, setRequest] = useState(false)
 
     useEffect(() => {
         async function getData() {
             try {
-                const response = await fetch(url)
-                const data = await response.json()
-                //console.log(response.json().data)
-                if (data) {
-                    setDatas(data)
-                }
-            } catch (error) {
-                console.error(error)
-                setDatas("error en la consulta")
-            }
-        }
-
-        async function setData() {
-
-            if(typeof parameter != 'object'){
-                throw new Error("se requiere un objeto");
-            }
-
-            if(JSON.stringify(parameter)==='{}'){
-                  throw new Error("objeto vacio")  
-            }
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(parameter),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                })
-
-                if(response.ok){
+               
+                if (config.type === 'get') {
+                    const response = await fetch(config.urls)
                     const data = await response.json()
-                    if(data){
+                    //console.log(response.json().data)
+                    if (data) {
                         setDatas(data)
                     }
+                } else {
+
+                    if (JSON.stringify(config.parameters) === '{}') {
+                        throw new Error("objeto vacio")
+                    }
+
+                    if (typeof config.parameters != 'object') {
+                        throw new Error("se requiere un objeto");
+                    }
+
+                    const response = await fetch(config.urls, {
+                        method: 'POST',
+                        body: JSON.stringify(config.parameters),
+                        headers: {
+                            'content-type': 'application/json'
+                        }
+                    })
+
+                    if (response.ok) {
+                        const data = await response.json()
+                        if (data) {
+                            setDatas(data)
+                        }
+                    }
+
                 }
-               
+            
+
             } catch (error) {
                 console.error(error)
                 setDatas("error en la consulta")
             }
         }
 
-        if(!parameter){
-            getData();
-        }else{
-            setData();
+        
+        if(config.isrequest){
+        getData()
         }
 
-    }, [url])
-    
+    }, [config])
 
-    return datas;
+    return [datas, setConfig];
 }
 
 
-export default Services;
+export default useServices;
