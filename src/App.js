@@ -14,7 +14,7 @@ const App = props => {
 		return keys[i];
 	};
 
-	console.log(getKeys(4));
+	//console.log(getKeys(4));
 
 	const handleAdd = () => {
 		// const newItems = datas.concat([{name: prompt('Enter some text')}])
@@ -22,7 +22,7 @@ const App = props => {
 
 		setconfig({
 			type: 'post',
-			urls: 'https://us-central1-botnews-97552.cloudfunctions.net/setUser',
+			urls: 'https://us-central1-botnews-97552.cloudfunctions.net/updateUsers',
 			parameters: {
 				name: name,
 				apellido: 'benito',
@@ -32,12 +32,24 @@ const App = props => {
 			isrequest: true
 		});
 	};
+	console.log(datos);
 
 	const deleteIten = i => {
 		//let newintenst = datas.slice();
 		//newintenst.splice(i, 1);
 		//setData(newintenst);
-		alert(getKeys(i));
+		//alert(getKeys(i));
+		setconfig({
+			type: 'post',
+			urls: 'https://us-central1-botnews-97552.cloudfunctions.net/updateUsers',
+			parameters: {
+				userid: getKeys(i),
+				newsdatos: {
+					passUser: 'maricondemrd'
+				}
+			},
+			isrequest: true
+		});
 		//console.log(i);
 		//alert(i);
 	};

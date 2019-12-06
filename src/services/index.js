@@ -62,3 +62,80 @@ const useServices = () => {
 };
 
 export default useServices;
+
+/** Guia para utilizar @useServices **/
+/**
+ * ---------------  @importar ---------------
+ *
+ *     import useService from '../services/index.js'    directorio es relativo
+ *
+ * ------------------ uso -------------------------
+ *
+ *          por defecto el hook expone dos parametros @datas y @setConfig
+ *          @datas : recibe los datos obenidos de la base de datos y los errores
+ *          @setConfig : contiene la configuracion necesaria para las peticiones.
+ *                      Ejemplo get
+ *                      @setConfigGET : {
+ *                                type: 'get',
+ *                                urls: 'url',    @url del servicio
+ *                                isrequest: true  @isrequest es falso la peticion no se realizar es importnte este valor
+ *                          }
+ *
+ *                     Ejemplo post
+ *                     @setConfigPOST : {
+ *                                type: 'post',
+ *                                urls: 'url',    @url del servicio
+ *                                parameters: {    @parametes por defecto espera un objeto. de lo contrario mostrara un error!.
+ *                                       parameter1: "nam1"
+ *                                       parameter2: "name2"
+ *                                       parameter2: "name3"
+ *                                }
+ *                                isrequest: true
+ *                              }
+ *
+ *       uso de @useService
+ *
+ *      **de esta manera se estara utilizando el servicio por defecto no realizara ninguna consulta**
+ *
+ *      const [datas, setConfig] = useService()
+ *
+ *      **Realizar consultas**
+ *
+ *          GET
+ *       @setConfigGET
+ *
+ *           or
+ *
+ *          POST
+ *       @setConfigPOST
+ *
+ *      **despues de haber modificado la configurancion automaticamente se realizara la consulta**
+ *
+ *      **recuperar datos**
+ *
+ *      consol.log(datas)
+ *
+ *
+ *     **consultar, insertar, actualisar, eleminar dinamicamente ejemplo**
+ *
+ *      const getServices = (type, url, parameters) => {
+ *          setConfig({
+ *              type: type,
+ *              urls: url
+ *              parameters: parameters
+ *              isrequest: true
+ *          })
+ *      }
+ *
+ *       **reutilzar la funcion creada**
+ *
+ *      getServices('get', 'httt:...')
+ *                  or
+ *      getServices('post', 'http: ...', {name: "joalk", hola: "...." ...})
+ *
+ *      **recuperar datos**
+ *
+ *      console.log(datas)
+ *
+ *
+ */
