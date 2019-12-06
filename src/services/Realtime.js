@@ -1,58 +1,42 @@
-import {useState, useEffect} from 'react'
+/** @format */
+
+import { useState, useEffect } from 'react';
 import firebase from 'firebase/app';
 //import 'firebase/auth';
 //import 'firebase/storage';
 import 'firebase/database';
-
-const firebaseConfig = {
-    "type": "service_account",
-    "project_id": "botnews-97552",
-    "private_key_id": "12a9efde85dd0cfc901d6d27e9700b0ee08db7f2",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCp+piBlDryoKBn\n2xLbBkFTEwIF4Z+miDYA/ma+PJRxd68vLusuLVACA2stKikr9D5+Fiajx63XoiYf\n23F1lJ4s05CiURVWdpLtul2rzacli7EFXo3Pq8tBpu6D9vOPKgkgdHBpnw78jvQB\nWCml+EaTvW6OtAaAOfg8LdS5MjgcYD5+aeXkvoBPZsYp5yvS+kiL1hVWbX7CCVba\njnRQzklIeKKl8vfImJwICFZmtKLSkMIDCXlYa83jvg72gksHpkwT5/zt3nlOmOHz\nsEm347g+qWUgdMUFRac0ru4IqU041PIM3iqIJetShUt18VEkHbNm1ER8HvjZSxB6\nWc3wFvNrAgMBAAECggEAMobMOJBwaVj39Yc4dqTIXEJlMoxb4avRqb/1mIz3bzct\nevAOdp5/jumnPTiwHmGvBdndyId9lICdppCbjGEOF7MX5jgGCLqceFASshQioFWC\n3F679sRRWgWeFtockizjo6MZGzxtvwNbYt7rGmvPxvDjYUYAPLN+p5zUA+z6ouw5\nAMaWcKtE3THSw+9wWF7oF8WxamguecuqUgOjEefgPqBQCIdlma2nxHuUqM5dGvKC\ntoy3B2n8VjZeqBSXPQOxur2K2HJqb1+PAybmaJ+0ABYO1fpMCwQou2GNsuktBFbT\nEKdy2cGq8NsypVsHnF33Hmze9d4wOKto3oku2HZrgQKBgQDTNtoHeiivbBduGB/f\n9nysT3aJtoY7N7iV/10Rb9e41g2oJUWKNy0Y4AMywPHX4Jb0cWCE2XTUAdNWL0aK\n/cmGr/zXiQmBSVvqTw3gwQtZ/wMnXQoAyoA3DaIsEnNZTBNDRNWd7TS8tcHO268Z\n5gZttNj6yaD93+cKys/Igf7/KwKBgQDOBWcCtVyDoDdPRKUItpa0Gqf9REogC/Z5\nHEtF3pJ698qzvYp7/vJpfXizDN1uRU7XyrnLUs+ObQSwrW8xaURaEzqq8jMPXJYm\ne0EowBkohI9gfpvmhgOV0hpD/GbdV4DJgP/emjnG6OabJezxuK0B9hrO3ySvoCDx\ng9Tar9+8wQKBgAqE8Nbufpg+CeyxxuSgohTy4DR7orPQUqEl1rzHlTbfck6tjIkV\ntmlGvuIIOgNGbD5AZ042hlsIvD3OnPTPLvpGSZFygcauoKVKyqYm9ynESaPsPlNL\nwpb7VthbEuOfplXzV7BF4BqF8uEaj936Vtef6i6TXDFItXkUIMUbtFeBAoGAAY8o\n6GxW9ugPgxoR5a78FQDepJwPs45jnycHqs+0bBnT/uhAVA/p5cJ9V12Rj3QW1KtE\nHLXTvFA26N9nKAiT69qZZxHOMR+SQ1hLdfN+PUBDlYdfxq7c+BVO/ZS7cpFm+B9x\n0E16gnbgx+vRj0LGjG1AZrBppqqflTRaOA18tAECgYEAm4iwEQRW338LbaHxdQIn\nDXFIbVqgjfmwqdbM/kx8l0nI4wRMl2wLC9WP8DrINQjF5+Y3xMbiUGCwqHRu2lOX\n1s0FG5pOX5b0+dLMMrFUKgL54eTK5Xb/T/GjshgoxQgrky+TkUHWQu39qKrliH0i\n4sYRNSLG/payNCrVYU142tw=\n-----END PRIVATE KEY-----\n",
-    "client_email": "firebase-adminsdk-wjd5k@botnews-97552.iam.gserviceaccount.com",
-    "client_id": "100298898729886902691",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-wjd5k%40botnews-97552.iam.gserviceaccount.com"
-};
-
+import config from './config.json';
 
 firebase.initializeApp({
-    credential: firebaseConfig,
-    databaseURL: "https://botnews-97552.firebaseio.com"
+	credential: config,
+	databaseURL: 'https://botnews-97552.firebaseio.com'
 });
 
-
-const database = firebase.database()
-
+const database = firebase.database();
 
 const useRealtime = (ref, tipo) => {
-    
-    const [data, setData] = useState(null)
-    const [loading, setLoading] = useState(true)
-        
+	const [data, setData] = useState(null);
+	const [loading, setLoading] = useState(true);
 
-    if(!ref || !tipo){
-        throw new Error("ref y tipo es necesario");
-    }
+	if (!ref || !tipo) {
+		throw new Error('ref y tipo es necesario');
+	}
 
-    if(typeof ref !== 'string' || typeof tipo !== 'string'){
-        throw new Error("ref o tipo es necesario un string");
-    }
+	if (typeof ref !== 'string' || typeof tipo !== 'string') {
+		throw new Error('ref o tipo es necesario un string');
+	}
 
-    useEffect(() => {
-        
-        database.ref(`/${ref}`).on(`${tipo}`, respon => {
-            const datas = respon.val()
-            setData(datas)
-            setLoading(false)
-        })
-    }, [])
+	useEffect(() => {
+		database.ref(`/${ref}`).on(`${tipo}`, respon => {
+			const datas = respon.val();
+			setData(datas);
+			setLoading(false);
+		});
+	}, []);
 
-    const parseData = Object.values(data || {}).map(key => key)
-    return [parseData, loading, setData];
-    
-}
- 
+	const keys = Object.keys(data || {});
+	const parseData = Object.values(data || {}).map(key => key);
+	return [parseData, loading, setData, keys];
+};
+
 export default useRealtime;

@@ -1,77 +1,64 @@
-import { useState, useEffect } from 'react'
+/** @format */
+
+import { useState, useEffect } from 'react';
 
 //consumiendo una API REST con fech
 const useServices = () => {
+	const configServiceDefault = {
+		type: 'get',
+		urls: '',
+		parameters: null,
+		isrequest: false
+	};
 
-    const configServiceDefault = {
-        type: 'get',
-        urls: '',
-        parameters: null,
-        isrequest: false
-    }
+	const [datas, setDatas] = useState(null);
+	const [config, setConfig] = useState(configServiceDefault);
 
-    const [datas, setDatas] = useState(null)
-    const [config, setConfig] = useState(configServiceDefault)
-    //const [isrequest,setRequest] = useState(false)
-    //const [type, seType] = useState('get')
-    // const [urls, setUrl] = useState(null)
-    // const [parameters, setParameters] = useState(null)
-    // const [isrequest, setRequest] = useState(false)
+	useEffect(() => {
+		async function getData() {
+			try {
+				if (config.type === 'get') {
+					const response = await fetch(config.urls);
+					const data = await response.json();
+					if (data) {
+						setDatas(data);
+					}
+				} else {
+					if (JSON.stringify(config.parameters) === '{}') {
+						throw new Error('objeto vacio');
+					}
 
-    useEffect(() => {
-        async function getData() {
-            try {
-               
-                if (config.type === 'get') {
-                    const response = await fetch(config.urls)
-                    const data = await response.json()
-                    //console.log(response.json().data)
-                    if (data) {
-                        setDatas(data)
-                    }
-                } else {
+					if (typeof config.parameters != 'object') {
+						throw new Error('se requiere un objeto');
+					}
 
-                    if (JSON.stringify(config.parameters) === '{}') {
-                        throw new Error("objeto vacio")
-                    }
+					const response = await fetch(config.urls, {
+						method: 'POST',
+						body: JSON.stringify(config.parameters),
+						headers: {
+							'content-type': 'application/json'
+						}
+					});
 
-                    if (typeof config.parameters != 'object') {
-                        throw new Error("se requiere un objeto");
-                    }
+					if (response.ok) {
+						const data = await response.json();
+						if (data) {
+							setDatas(data);
+						}
+					}
+				}
+			} catch (error) {
+				console.error(error);
+				setDatas('error en la consulta');
+			}
+		}
 
-                    const response = await fetch(config.urls, {
-                        method: 'POST',
-                        body: JSON.stringify(config.parameters),
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    })
+		if (config.isrequest) {
+			getData();
+		}
+	}, [config]);
 
-                    if (response.ok) {
-                        const data = await response.json()
-                        if (data) {
-                            setDatas(data)
-                        }
-                    }
-
-                }
-            
-
-            } catch (error) {
-                console.error(error)
-                setDatas("error en la consulta")
-            }
-        }
-
-        
-        if(config.isrequest){
-        getData()
-        }
-
-    }, [config])
-
-    return [datas, setConfig];
-}
-
+	return [datas, setConfig];
+};
 
 export default useServices;
